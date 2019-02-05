@@ -1,0 +1,8 @@
+{
+"boundedContext": "appengine",
+"domain": "tech",
+"title": "swift_vapor_example",
+"version": "",
+"serviceId": "swift_vapor_example",
+"scmRepository": "https://stash.allegrogroup.com/projects/TECHAPPENGINE/repos/swift_vapor_example_tool_/browse"
+}

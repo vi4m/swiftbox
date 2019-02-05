@@ -1,0 +1,21 @@
+script: "gen/template.groovy"
+filesToRemove:
+  - "gen"
+description: "Swift on Vapor - full package"
+type: SERVICE
+group: COMMUNITY
+vaasAvailable: false
+enabled: true
+tags:
+  - "swift"
+  - "docker"
+maintainers:
+  - "marcin.kliks@allegro.pl"
+hint: >
+  This is a microservice template for Swift which includes:
+    - routing capability
+    - templating (Leaf)
+    - database handling (Fluent)
+    - http client(vapor engine client)
+    - allegro microservice contract library (swidamio library)
+    - comprehensive testing suite
