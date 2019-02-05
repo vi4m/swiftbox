@@ -3,10 +3,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift_vapor_example",
+    name: "swiftbox",
 
     products: [
-        .executable(name: "swift_vapor_example", targets: ["Run"])
+        .executable(name: "swiftbox", targets: ["Run"])
     ],
     dependencies: [
         .package(url: "https://stash.allegrogroup.com/scm/techappengine/swidamio.git", from: "1.4.2"),

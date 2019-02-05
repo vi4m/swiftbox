@@ -7,8 +7,8 @@ RUN swift --version
 
 # -----------
 
-ENV PROJECT_PATH=/opt/swift_vapor_example
-ENV ARTIFACT_PATH=/opt/swift_vapor_example/dist
+ENV PROJECT_PATH=/opt/swiftbox
+ENV ARTIFACT_PATH=/opt/swiftbox/dist
 WORKDIR $PROJECT_PATH
 
 RUN set -ex \

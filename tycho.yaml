@@ -1,6 +1,6 @@
 ---
-name: swift_vapor_example
-group: pl.allegro.tech.appengine
+name: swiftbox
+group: pl.allegro.tech.sdk
 version_scheme:
     type: external
     commands:
@@ -9,7 +9,7 @@ version_scheme:
 build:
   - command: "./build_bamboo_ci.sh"
 
-package: "artifact/swift_vapor_example.zip"
+package: "artifact/swiftbox.zip"
 
 publish:
     - artifactory:
@@ -32,7 +32,7 @@ deploy:
     dev:
         - marathon:
             destination: dev
-            command: "cd ./opt/swift_vapor_example/dist/ && ./launch_docker_container.sh development"
+            command: "cd ./opt/swiftbox/dist/ && ./launch_docker_container.sh development"
             instances: 1
             cpus: 0.3
             mem: 128
@@ -44,5 +44,5 @@ deploy:
                 PROJECT_PATH: ./
                 PROJECT_PROPERTIES_PATH: ./project-properties.json
             labels:
-                consul: "swift_vapor_example"
+                consul: "swiftbox"
 

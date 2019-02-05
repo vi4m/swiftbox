@@ -26,28 +26,28 @@ EOL
 
 # fetch cache
 docker --config=dockerconfig pull \
-    artifactory.allegrogroup.com/pl.allegro.tech.appengine/swift_vapor_example-dev:latest || true
+    artifactory.allegrogroup.com/pl.allegro.tech.sdk/swiftbox-dev:latest || true
 
 
 # build dev image
 docker --config=dockerconfig build \
-    -t artifactory.allegrogroup.com/pl.allegro.tech.appengine/swift_vapor_example-dev:$TEMP_DOCKER_TAG \
+    -t artifactory.allegrogroup.com/pl.allegro.tech.sdk/swiftbox-dev:$TEMP_DOCKER_TAG \
     -f docker/Dockerfile-dev .
 
 # run tests from runtime image
 docker run --name $DEV_CONTAINER_NAME \
-       artifactory.allegrogroup.com/pl.allegro.tech.appengine/swift_vapor_example-dev:$TEMP_DOCKER_TAG \
-       /opt/swift_vapor_example/run_tests.sh
+       artifactory.allegrogroup.com/pl.allegro.tech.sdk/swiftbox-dev:$TEMP_DOCKER_TAG \
+       /opt/swiftbox/run_tests.sh
 
 
 # create artifact file
 docker run --name $ARTIFACT_CONTAINER_NAME \
-    artifactory.allegrogroup.com/pl.allegro.tech.appengine/swift_vapor_example-dev:$TEMP_DOCKER_TAG \
+    artifactory.allegrogroup.com/pl.allegro.tech.sdk/swiftbox-dev:$TEMP_DOCKER_TAG \
     /root/package_artifact.sh
 
 # copy artifact file from docker container
 mkdir -p artifact
-docker cp $ARTIFACT_CONTAINER_NAME:/root/artifact/swift_vapor_example.zip ./artifact/swift_vapor_example.zip
+docker cp $ARTIFACT_CONTAINER_NAME:/root/artifact/swiftbox.zip ./artifact/swiftbox.zip
 
 src/get_version.sh > APP_VERSION
 
