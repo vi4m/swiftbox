@@ -1,31 +1,12 @@
-FROM artifactory.allegrogroup.com/pylabs/alle-swift-dev:4.1-3-ubuntu14
+FROM artifactory.allegrogroup.com/pylabs/alle-swift-dev:4.2-2-ubuntu16
 
-ENV PATH /usr/bin:$PATH
-
-# Print Installed Swift Version
-RUN swift --version
-
-# -----------
-
-ENV PROJECT_PATH=/opt/swiftbox
-ENV ARTIFACT_PATH=/opt/swiftbox/dist
+ENV PROJECT_PATH /opt/swiftbox
 WORKDIR $PROJECT_PATH
 
 RUN set -ex \
     && apt-get update \
-    && apt-get install -y apt-transport-https zip wget \
+    && apt-get install -y apt-transport-https zip wget software-properties-common \
     && wget -q https://repo.vapor.codes/apt/keyring.gpg -O- | apt-key add - \
     && echo "deb https://repo.vapor.codes/apt $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/vapor.list \
-    && apt-get -y update && apt-get -y install ctls make
-
-
-ADD src $PROJECT_PATH
-RUN rm -rf $PROJECT_PATH/src/.build
-
-ADD docker/launch_docker_container.sh $ARTIFACT_PATH/launch_docker_container.sh
-ADD docker/package_artifact.sh /root/package_artifact.sh
-ADD lddcopy.sh $PROJECT_PATH/lddcopy.sh
-
-WORKDIR $PROJECT_PATH
-RUN rm -rf .build
-RUN swift build -c debug
+    && apt-get update \
+    && apt-get install -y vapor

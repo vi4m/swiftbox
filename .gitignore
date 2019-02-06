@@ -1,3 +1,7 @@
 APP_VERSION
 artifact
 build
+.build
+.idea
+*.xcodeproj
+Package.resolved
