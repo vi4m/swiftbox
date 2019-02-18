@@ -1,13 +1,21 @@
 # SwiftBox
-SwiftBox is a package that helps building Swift/Vapor applications.
+SwiftBox is a package that helps building Swift/Vapor microservices.
 
 ## SwiftBox Configuration
-SwiftBox Configuration is a package for creating type-safe configuration in your application.
-It supports:
- - multiple sources (environment, JSON, command line, dictionary)
- - overriding
- - optionals
- - nesting (structs and arrays)
+SwiftBox Configuration allows passing type-safe configuration from commandline, environment variables, and other sources, by declaring one simple struct.
+
+Configuration can be automatically populated with:
+- Commandline arguments: `./yourapp --config:simple=test --config:nested.number=1 --config:array.0=string`
+- Environment variables: `SIMPLE=test NESTED_NUMBER=1 ARRAY_0=string ./yourapp`
+- JSON
+- Dictionary
+
+SwiftBox Configuration supports:
+- overriding (source that is declared later can override previous values)
+- inheritance
+- optionals
+- type-safety
+- nesting (structs and arrays)
 
 ### Usage
 #### 1. Import
@@ -285,7 +293,9 @@ private func configureLogging(_ config: inout Config, _ env: inout Environment, 
 
 
 ## SwiftBoxMetrics
-Metrics system for swift that supports:
+Metrics for microservices, based on SSWG standard with Statsd built-in support.
+
+Supported metric types:
 - Counters
 - Timers
 - Gauges
@@ -301,7 +311,7 @@ import SwiftBoxMetrics
 Metrics must be bootstrap with Handler, that conforms to `MetricsHandler` protocol:
 ```swift        
 Metrics.bootstrap(
-    try! StatsDMetricsHandler(
+    try StatsDMetricsHandler(
         baseMetricPath: AppConfig.global.statsd.basePath!,
         client: UDPStatsDClient(
             config: UDPConnectionConfig(
@@ -337,7 +347,7 @@ Default handler for metrics that prints gathered metrics to console.
 StatsD Metrics Handler responsible for sending gathered logs to statsD server. Supports TCP and UDP protocols.
 Metrics are sent in separate thread, so operation is non-blocking for application.
 ```swift
-try! StatsDMetricsHandler(
+try StatsDMetricsHandler(
     baseMetricPath: AppConfig.global.statsd.basePath!,
     client: UDPStatsDClient(
         config: UDPConnectionConfig(
@@ -354,7 +364,7 @@ try! StatsDMetricsHandler(
 To create custom handlers conform to `MetricsHandler` class
 
 ## Microservice contract
-Microservice contract for Vapor applications. Required for applications running in mesos.
+Microservice contract for Vapor application that exposes basic service metadata.
 
 Registered endpoints:
 - `/status/ping`
@@ -367,6 +377,7 @@ Registered endpoints:
 ```swift
 import SwiftBoxMicroserviceContract
 ```
+
 #### 2. Register routes
 ```swift
 public func routes(_ router: Router) throws {
@@ -376,3 +387,17 @@ public func routes(_ router: Router) throws {
     try router.register(collection: MicroServiceContractController())
 }
 ```
+
+#### 3. Config file
+Microservice contract requires JSON configuration file with following structure:
+```json
+{
+    "boundedContext": "test",
+    "domain": "tech",
+    "title": "test",
+    "version": "1.0",
+    "serviceId": "test.id",
+    "scmRepository": "https://github.com/my/repo"
+}
+```
+Create such file and add it's path to application env variables with `PROJECT_PROPERTIES_PATH` key.
