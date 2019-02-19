@@ -103,7 +103,7 @@ Conf.bootstrap(from: [
 
 
 #### Dictionary source
-Allows to read configuration from Dictionary, may be used to specify in-code defaults for configuration.
+Allows reading configuration from Dictionary, may be used to specify in-code defaults for configuration.
 
 ###### Example
 ```swift
@@ -119,7 +119,7 @@ Conf.bootstrap(from: [
 
 
 #### JSON source
-Allows to read configuration from JSON data.
+Allows reading configuration from JSON data.
 
 ###### Example
 ```swift
@@ -130,7 +130,7 @@ Conf.bootstrap(from: [
 
 
 #### Environment source
-Allows to read configuration data from environment.
+Allows reading configuration data from environment.
 
 ###### Example
 ```swift
@@ -174,7 +174,7 @@ ARRAYNESTED_2_VALUE="null"
 
 
 #### Command line source
-Allows to read configuration data from environment.
+Allows reading configuration data from environment.
 ###### Example
 ```swift
 Conf.bootstrap(from: [
