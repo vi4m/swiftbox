@@ -8,7 +8,7 @@ public protocol ConfigSource {
 
 /// Environment configuration source
 ///
-/// Allows to read configuration data from environment using following syntax:
+/// Allows reading configuration data from environment using following syntax:
 ///      struct Conf: Configuration {
 ///          let simple: String
 ///          let int: Int
@@ -69,7 +69,7 @@ public class EnvSource: ConfigSource {
 }
 
 /// JSON configuration source
-/// Allows to read configuration from JSON data
+/// Allows reading configuration from JSON data
 public class JSONSource: ConfigSource {
     let dataSource: Data
 
@@ -123,7 +123,7 @@ private class JSONNsNullMapper {
 }
 
 /// Dictionary configuration source
-/// Allows to read configuration from Dictionary, may be used to specify in-code defaults for configuration
+/// Allows reading configuration from Dictionary, may be used to specify in-code defaults for configuration
 public class DictionarySource: ConfigSource {
     let dataSource: Storage
 
@@ -138,7 +138,7 @@ public class DictionarySource: ConfigSource {
 
 /// Command Line configuration source
 ///
-/// Allows to read configuration data from environment using following syntax:
+/// Allows reading configuration data from environment using following syntax:
 ///      struct Conf: Configuration {
 ///          let simple: String
 ///          let int: Int
