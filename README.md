@@ -383,8 +383,8 @@ import SwiftBoxMicroserviceContract
 public func routes(_ router: Router) throws {
     /// ... your routes ...
 
-    // MicroService contract
-    try router.register(collection: MicroServiceContractController())
+    // Microservice contract
+    try router.register(collection: MicroserviceContractController())
 }
 ```
 

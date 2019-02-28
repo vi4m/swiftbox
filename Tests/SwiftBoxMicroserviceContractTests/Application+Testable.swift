@@ -22,7 +22,7 @@ internal extension Application {
         services.register(Router.self) { _ -> EngineRouter in
             let router = EngineRouter.default()
             try router.register(
-                    collection: MicroServiceContractController(projectPropertiesContent: sampleProjectProperties.data(using: .utf8)!)
+                    collection: MicroserviceContractController(projectPropertiesContent: sampleProjectProperties.data(using: .utf8)!)
             )
             return router
         }
