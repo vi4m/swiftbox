@@ -21,7 +21,7 @@ public struct InfoResponse: Content {
 
 extension InfoResponse: Equatable {}
 
-public final class MicroServiceContractController {
+public final class MicroserviceContractController {
     let metadata: ServiceMetadata
 
     public init(projectPropertiesPath: String? = nil) {
@@ -49,7 +49,7 @@ public final class MicroServiceContractController {
     }
 }
 
-extension MicroServiceContractController: RouteCollection {
+extension MicroserviceContractController: RouteCollection {
     public func boot(router: Router) throws {
         let appId = self.metadata.taskId()
         let serviceId = self.metadata.serviceId
