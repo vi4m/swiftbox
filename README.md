@@ -1,11 +1,11 @@
 # SwiftBox
-SwiftBox is a package that helps building Swift/Vapor microservices.
+SwiftBox is a package that helps to build Swift/Vapor microservices.
 
 ## SwiftBox Configuration
-SwiftBox Configuration allows passing type-safe configuration from commandline, environment variables, and other sources, by declaring one simple struct.
+SwiftBox Configuration allows to pass type-safe configuration from command line, environment variables and other sources by declaring one simple struct.
 
 Configuration can be automatically populated with:
-- Commandline arguments: `./yourapp --config:simple=test --config:nested.number=1 --config:array.0=string`
+- Command line arguments: `./yourapp --config:simple=test --config:nested.number=1 --config:array.0=string`
 - Environment variables: `SIMPLE=test NESTED_NUMBER=1 ARRAY_0=string ./yourapp`
 - JSON
 - Dictionary
@@ -25,7 +25,7 @@ import SwiftBoxConfig
 ```
 
 #### 2. Configuration structure
-Create your configuration, remember that it must conform to Configuration protocol in order to be decoded properly.
+When you create your configuration, remember that it in order to be decoded properly, it must conform to the C`onfiguration` protocol.
 ```swift
 struct Conf: Configuration {
     let simple: String
@@ -41,24 +41,24 @@ struct Conf: Configuration {
 }
 ```
 #### 3. Bootstrap
-Configuration must be bootstrapped before use, to do so in the first place you need to conform to `ConfigManager` protocol:
+Configuration must be bootstrapped before use. To do so, you need to conform to the `ConfigManager` protocol in the first place:
 ```swift
 extension Conf: ConfigManager {
     public static var configuration: Conf? = nil
 }
 ```
 
-Next call `bootstrap` method on your `ConfigManager` and pass sources you want to use:
+Next, call `bootstrap` method on your `ConfigManager` and pass sources you want to use:
 ```swift
 Conf.bootstrap(from: [EnvSource()])
 ```
 
-**Remember that bootstrap must be called before using config and cannot be called more than once, `fatalError` will be thrown otherwise**
+**Remember that bootstrap must be called before using config and cannot be called more than once. Otherwise, `fatalError` will be thrown.**
 
 
 #### 4. Usage
-After completing all the previous steps you finally can use config in your application.
-You can access configuration instance via `global` property:
+After completing all the previous steps you  can finally use config in your application.
+You can access the configuration instance via `global` property:
 ```swift
 Conf.global.simple
 Conf.global.int
@@ -73,7 +73,7 @@ Conf.global.arraynested[0].value // Optional[String]
 Configuration can be fed with multiple sources.
 Sources are passed into bootstrap function.
 
-If you are using multiple sources outputs are merged (structs are merged recursively, other values are overridden):
+If you are using multiple sources, outputs are merged (structs are merged recursively, other values are overridden):
 ```swift
 Conf.bootstrap(from: [
     DictionarySource(dataSource: [
@@ -138,7 +138,7 @@ Conf.bootstrap(from: [
     EnvSource(prefix: "SAMPLE")
 ])
 ```
-Prefix can be set for `EnvSource`, so it reads only variables which key starts with given value.
+Prefix can be set for `EnvSource`, so it reads only variables which key starts with a given value.
 
 ###### Sample Configuration
 ```swift
@@ -181,7 +181,7 @@ Conf.bootstrap(from: [
     CommandLineSource(prefix: "--config:my-prefix-")
 ])
 ```
-Prefix can be set, so it reads only arguments which starts with given value, defaults to `--config:`
+If a prefix is set, only arguments which start with a given value will be read. Defaults to `--config:`
 
 ###### Sample Configuration
 ```swift
@@ -200,7 +200,7 @@ struct Conf: Configuration {
 }
 ```
 
-Above example may be populated using following command line arguments:
+The example above may be populated using following command line arguments:
 ```
 --config:simple=test
 --config:int=1
@@ -218,7 +218,7 @@ Above example may be populated using following command line arguments:
 
 
 #### Custom sources
-To create custom sources you need to create class that conforms to `ConfigSource`.
+To create custom sources, you need to create a class that conforms to `ConfigSource`.
 `DictionarySource` is the simplest working source that can be used as an example:
 ```swift
 public typealias Storage = [String: Any?]
@@ -237,7 +237,7 @@ public class DictionarySource: ConfigSource {
 ```
 
 ## SwiftBoxLogging
-Logging system for swift.
+Logging system for Swift.
 
 ### Usage
 
@@ -247,15 +247,15 @@ import SwiftBoxLogging
 ```
 
 #### 2. Bootstrap
-Logging should be bootstrapped before using (it defaults to `PrintLogger`).
-Bootstrap required one parameter which is logger factory.
+Logging should be bootstrapped before use (it defaults to `PrintLogger`).
+Bootstrap requires one parameter which is the logger factory.
 Logger factory must return `Logger` from `Console/Logging` package.
 ```swift
 Logging.bootstrap({ name in Logger2(name) })
 ```
 
 #### 2. Usage
-Create logger instance:
+Create a logger instance:
 ```swift
 fileprivate var logger = Logging.make(#file)
 ```
@@ -274,7 +274,7 @@ logger.fatal("fatal")
 To create custom loggers your class must conform to `Logger` protocol from `Console/Logging` package. 
 
 ### Vapor
-You can use same logging in vapor and logging package:
+You can use same logging in Vapor and logging package:
 ```swift
 private func configureLogging(_ config: inout Config, _ env: inout Environment, _ services: inout Services) {
     /// Register Logger2
@@ -361,7 +361,7 @@ try StatsDMetricsHandler(
 `client` is a `TCPStatsDClient` or `UDPStatsDClient` instance.
 
 #### Custom Handlers
-To create custom handlers conform to `MetricsHandler` class
+To create custom handlers, conform to `MetricsHandler` class.
 
 ## Microservice contract
 Microservice contract for Vapor application that exposes basic service metadata.
@@ -389,7 +389,7 @@ public func routes(_ router: Router) throws {
 ```
 
 #### 3. Config file
-Microservice contract requires JSON configuration file with following structure:
+Microservice contract requires JSON configuration file with a following structure:
 ```json
 {
     "boundedContext": "test",
