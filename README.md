@@ -25,7 +25,7 @@ import SwiftBoxConfig
 ```
 
 #### 2. Configuration structure
-When you create your configuration, remember that it in order to be decoded properly, it must conform to the C`onfiguration` protocol.
+When you create your configuration, remember that it in order to be decoded properly, it must conform to the `Configuration` protocol.
 ```swift
 struct Conf: Configuration {
     let simple: String
