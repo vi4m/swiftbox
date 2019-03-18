@@ -21,8 +21,8 @@ docker_test:
 	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make test
 
 format:
-	swiftformat --disable redundantSelf ./Sources
+	swiftformat ./Sources
 
 lint:
-	swiftformat --lint --verbose --disable redundantSelf ./Sources
+	swiftformat --lint --verbose ./Sources
 

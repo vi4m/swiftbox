@@ -1,4 +1,14 @@
-FROM artifactory.allegrogroup.com/pylabs/alle-swift-dev:4.2-2-ubuntu16
+FROM swift:4.2 as swiftformat
+ARG SWIFTFORMAT_VERSION=0.40.0
+RUN git clone -b ${SWIFTFORMAT_VERSION} --single-branch --depth 1 https://github.com/nicklockwood/SwiftFormat.git && \
+   cd SwiftFormat && \
+   swift build -c release && \
+   cp .build/release/swiftformat /usr/bin/swiftformat && \
+   cd .. && \
+   rm -rf SwiftFormat
+
+
+FROM ubuntu:16.04
 
 ENV PROJECT_PATH /opt/swiftbox
 WORKDIR $PROJECT_PATH
