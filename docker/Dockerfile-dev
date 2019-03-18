@@ -13,6 +13,8 @@ FROM ubuntu:16.04
 ENV PROJECT_PATH /opt/swiftbox
 WORKDIR $PROJECT_PATH
 
+COPY --from=swiftformat /usr/bin/swiftformat /usr/bin/swiftformat
+
 RUN set -ex \
     && apt-get update \
     && apt-get install -y apt-transport-https zip wget software-properties-common \
