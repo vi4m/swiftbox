@@ -6,10 +6,10 @@ public enum Logging {
     }
 
     public static func bootstrap(_ factory: @escaping (String) -> Logger) {
-        self._factory = factory
+        _factory = factory
     }
 
     public static func make(_ label: String) -> Logger {
-        return self._factory(label)
+        return _factory(label)
     }
 }

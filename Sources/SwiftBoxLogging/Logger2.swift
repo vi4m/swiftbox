@@ -14,9 +14,9 @@ public final class Logger2: Logger {
 
     public func log(_ string: String, at level: LogLevel, file: String, function: String, line: UInt, column _: UInt) {
         let event = Logger2Event(
-            message: string, logger: self.name, level: level.description, file: file, line: line, function: function
+            message: string, logger: name, level: level.description, file: file, line: line, function: function
         )
-        self.printFunction(event.toJSON())
+        printFunction(event.toJSON())
         fflush(stdout)
     }
 }

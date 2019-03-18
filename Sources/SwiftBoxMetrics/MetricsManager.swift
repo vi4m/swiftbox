@@ -2,7 +2,7 @@ import Foundation
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
+private var logger = Logging.make(#file)
 
 /// Global Metrics manager
 /// Compatible with Swift Metrics Proposal
@@ -14,11 +14,11 @@ public enum Metrics {
     /// It is intended to be ran before app initializes
     public static func bootstrap(_ handler: MetricsHandler) {
         // TODO: lock
-        self._handler = handler
+        _handler = handler
     }
 
     /// Global handler instance getter
     public static var global: MetricsHandler {
-        return self._handler
+        return _handler
     }
 }

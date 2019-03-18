@@ -45,15 +45,15 @@ public class EnvSource: ConfigSource {
     }
 
     public func getConfig() throws -> Storage {
-        let filteredData = self.filterByPrefix(data: self.dataSource, prefix: self.prefix)
-        return try FlatDictConfigParser(data: filteredData, separator: self.separator).decode()
+        let filteredData = filterByPrefix(data: dataSource, prefix: prefix)
+        return try FlatDictConfigParser(data: filteredData, separator: separator).decode()
     }
 
-    /// TODO
+    // TODO:
     private func filterByPrefix(data: Storage, prefix: String?) -> Storage {
         if let prefix = prefix {
-            let _prefix = prefix.lowercased() + String(self.separator)
-            let filteredData = data.filter { key, value in
+            let _prefix = prefix.lowercased() + String(separator)
+            let filteredData = data.filter { key, _ in
                 key.lowercased().starts(with: _prefix)
             }
             return Dictionary(
@@ -78,7 +78,7 @@ public class JSONSource: ConfigSource {
     }
 
     public func getConfig() throws -> Storage {
-        let data = try JSONSerialization.jsonObject(with: self.dataSource, options: []) as! Storage
+        let data = try JSONSerialization.jsonObject(with: dataSource, options: []) as! Storage
         return JSONNsNullMapper.mapNSNullToNil(data: data) as! Storage
     }
 }
@@ -87,18 +87,18 @@ public class JSONSource: ConfigSource {
 private class JSONNsNullMapper {
     public class func mapNSNullToNil(data: Any?) -> Any? {
         if let data = data as? Storage {
-            return self.mapDict(data: data)
+            return mapDict(data: data)
         } else if let data = data as? StorageArray {
-            return self.mapArray(data: data)
+            return mapArray(data: data)
         } else {
-            return self.mapSingle(data: data)
+            return mapSingle(data: data)
         }
     }
 
     private class func mapDict(data: Storage) -> Storage {
         var result: [String: Any?] = [:]
         for (key, value) in data {
-            result[key] = self.mapNSNullToNil(data: value)
+            result[key] = mapNSNullToNil(data: value)
         }
 
         return result
@@ -107,7 +107,7 @@ private class JSONNsNullMapper {
     private class func mapArray(data: StorageArray) -> StorageArray {
         var result: [Any?] = []
         for value in data {
-            result.append(self.mapNSNullToNil(data: value))
+            result.append(mapNSNullToNil(data: value))
         }
 
         return result
@@ -132,7 +132,7 @@ public class DictionarySource: ConfigSource {
     }
 
     public func getConfig() throws -> Storage {
-        return self.dataSource
+        return dataSource
     }
 }
 
@@ -172,12 +172,12 @@ public class CommandLineSource: ConfigSource {
 
     public init(dataSource: [String]? = nil, prefix: String? = defaultPrefix) {
         self.prefix = prefix
-        self.commandLineArguments = dataSource ?? CommandLine.arguments
+        commandLineArguments = dataSource ?? CommandLine.arguments
     }
 
     public func getConfig() throws -> Storage {
-        let filteredData = self.filterRemovingPrefix(self.commandLineArguments)
-        let inputStorage = self.mapArgumentsToStorage(filteredData)
+        let filteredData = filterRemovingPrefix(commandLineArguments)
+        let inputStorage = mapArgumentsToStorage(filteredData)
         return try FlatDictConfigParser(data: inputStorage, separator: ".").decode()
     }
 

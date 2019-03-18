@@ -6,18 +6,18 @@ public protocol StatsDMetric: Metric {
 
 extension TimerMetric: StatsDMetric {
     public func getStatsDLine() -> String {
-        return "\(self.name):\(self.value)|ms"
+        return "\(name):\(value)|ms"
     }
 }
 
 extension CounterMetric: StatsDMetric {
     public func getStatsDLine() -> String {
-        return "\(self.name):\(self.value)|c"
+        return "\(name):\(value)|c"
     }
 }
 
 extension GaugeMetric: StatsDMetric {
     public func getStatsDLine() -> String {
-        return "\(self.name):\(self.type.rawValue)\(self.value)|g"
+        return "\(name):\(type.rawValue)\(value)|g"
     }
 }

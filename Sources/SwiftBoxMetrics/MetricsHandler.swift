@@ -2,7 +2,7 @@ import Foundation
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
+private var logger = Logging.make(#file)
 
 public protocol MetricsHandler {
     func sendMetric(metric: Metric)
@@ -14,14 +14,13 @@ public extension MetricsHandler {
         let start = Date()
         let result = try function()
         let elapsed = Date().timeIntervalSince(start) * 1000
-        self.sendMetric(metric: TimerMetric(name: name, value: elapsed))
+        sendMetric(metric: TimerMetric(name: name, value: elapsed))
         return result
     }
 }
 
 /// Default metrics handler that logs all gathered metrics to console
 public class LoggerMetricsHandler: MetricsHandler {
-
     public func sendMetric(metric: Metric) {
         logger.debug("LoggerMetricsHandler: \(metric)")
     }
