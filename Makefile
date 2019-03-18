@@ -19,6 +19,7 @@ test:
 docker_test:
 	docker build . -f docker/Dockerfile-dev -t $(DOCKER_TAG)
 	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make test
+	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make lint
 
 format:
 	swiftformat ./Sources
