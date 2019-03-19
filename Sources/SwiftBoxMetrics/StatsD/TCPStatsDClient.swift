@@ -89,7 +89,7 @@ public class TCPStatsDClient: StatsDClientProtocol {
     /// Actual push metrics function with retries counting.
     /// Gets connection and writes metrics in time format to opened socket channel.
     public func pushMetric(metricLine: String, retriesLeft: Int) {
-        // TODO: Send with batches
+        // TODO(Blejwi): Send with batches
         _ = getConnection().flatMap { channel in
             logger.debug("Sending line: \"\(metricLine)\", retries left: \(retriesLeft)")
             let line = metricLine + "\n"

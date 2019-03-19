@@ -67,7 +67,7 @@ public class UDPStatsDClient: StatsDClientProtocol {
     /// Actual push metrics function with retries counting.
     /// Gets connection and writes metrics in time format to opened socket channel.
     public func pushMetric(metricLine: String) {
-        // TODO: Send with batches
+        // TODO(Blejwi): Send with batches
         _ = getConnection().map { channel in
             logger.debug("\(channel)")
             logger.debug("Sending line: \"\(metricLine)\"")

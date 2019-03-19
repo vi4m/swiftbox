@@ -13,7 +13,6 @@ public enum Metrics {
     /// Bootstrap method used to overwrite default handler.
     /// It is intended to be ran before app initializes
     public static func bootstrap(_ handler: MetricsHandler) {
-        // TODO: lock
         self.handler = handler
     }
 
