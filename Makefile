@@ -18,7 +18,9 @@ test:
 
 docker_test:
 	docker build . -f docker/Dockerfile-dev -t $(DOCKER_TAG)
+	cat Makefile
 	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make test
+	ls -la ./Sources/SwiftBoxConfig
 	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make lint
 
 format:

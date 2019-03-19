@@ -1,19 +1,6 @@
-FROM swift:4.2 as swiftformat
+FROM ubuntu:16.04 as swiftformat
+
 ARG SWIFTFORMAT_VERSION=0.40.0
-RUN git clone -b ${SWIFTFORMAT_VERSION} --single-branch --depth 1 https://github.com/nicklockwood/SwiftFormat.git && \
-   cd SwiftFormat && \
-   swift build -c release && \
-   cp .build/release/swiftformat /usr/bin/swiftformat && \
-   cd .. && \
-   rm -rf SwiftFormat
-
-
-FROM ubuntu:16.04
-
-ENV PROJECT_PATH /opt/swiftbox
-WORKDIR $PROJECT_PATH
-
-COPY --from=swiftformat /usr/bin/swiftformat /usr/bin/swiftformat
 
 RUN set -ex \
     && apt-get update \
@@ -21,4 +8,14 @@ RUN set -ex \
     && wget -q https://repo.vapor.codes/apt/keyring.gpg -O- | apt-key add - \
     && echo "deb https://repo.vapor.codes/apt $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/vapor.list \
     && apt-get update \
-    && apt-get install -y vapor
+    && apt-get install -y vapor \
+
+    # swiftformat
+    && git clone -b ${SWIFTFORMAT_VERSION} --single-branch --depth 1 https://github.com/nicklockwood/SwiftFormat.git \
+    && cd SwiftFormat \
+    && swift build -c release \
+    && cp .build/release/swiftformat /usr/bin/swiftformat \
+    && cd .. \
+    && rm -rf SwiftFormat
+
+WORKDIR /opt/swiftbox
