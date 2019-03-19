@@ -13,7 +13,7 @@ public struct ServiceMetadataBuilder {
         }
 
         self.init(projectPropertiesContents: contents)
-        self.projectPropertiesPath = path
+        projectPropertiesPath = path
     }
 
     public init(projectPropertiesContents: Data) {

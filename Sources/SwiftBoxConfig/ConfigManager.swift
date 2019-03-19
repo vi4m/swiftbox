@@ -2,7 +2,7 @@ import Foundation
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
+private var logger = Logging.make(#file)
 
 /// Config Manager protocol that Application Configuration Manager must conform to.
 ///
@@ -57,10 +57,8 @@ public typealias Configuration = Decodable
 /// Extension with default implementations for Manager
 extension ConfigManager {
     public static var global: T {
-        get {
-            return try! self.getConfiguration()
+            return try! getConfiguration()
         }
-    }
 
     internal static func getConfiguration() throws -> T {
         guard let config = self.configuration else {
@@ -70,10 +68,10 @@ extension ConfigManager {
     }
 
     internal static func setConfiguration(value: T) throws {
-        if self.configuration != nil {
+        if configuration != nil {
             throw ConfigManagerError.alreadyBootstrapped
         }
-        self.configuration = value
+        configuration = value
     }
 
     /// Bootstrap function used to read config from various sources.
@@ -84,22 +82,23 @@ extension ConfigManager {
         for source in sources {
             do {
                 let sourceConfigData = try source.getConfig()
-                result = self.mergeConfigs(result, sourceConfigData)
-            } catch let error {
+                result = mergeConfigs(result, sourceConfigData)
+            } catch {
                 logger.error("Error during parsing source: \(source), error: \(error)")
                 throw error
             }
         }
 
+        // swiftformat:disable redundantInit
         let config = try T.init(from: DictionaryDecoder(codingPath: [], storage: result))
-        try self.setConfiguration(value: config)
+        try setConfiguration(value: config)
     }
 
     /// Merge config Dictionaries recursively
     private static func mergeConfigs(_ config1: Storage, _ config2: Storage) -> Storage {
         var result = config1
 
-        result.merge(config2) { (current, new) in
+        result.merge(config2) { current, new in
             if let currentDict = current as? Storage, let newDict = new as? Storage {
                 return self.mergeConfigs(currentDict, newDict)
             }

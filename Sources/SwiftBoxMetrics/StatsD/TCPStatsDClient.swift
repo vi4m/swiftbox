@@ -3,7 +3,7 @@ import NIO
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
+private var logger = Logging.make(#file)
 
 public typealias TCPConnectionFactoryType = (TCPConnectionConfig) -> EventLoopFuture<Channel>
 
@@ -40,12 +40,12 @@ public struct TCPConnectionConfig {
 
     public init(
             host: String,
-            port: Int = 8125,
-            connectionTimeout: TimeAmount = TimeAmount.milliseconds(1000),
-            threadGroup: MultiThreadedEventLoopGroup? = nil,
-            maxPushRetries: Int = 5,
-            pushRetryInterval: TimeAmount = TimeAmount.milliseconds(500),
-            connectionFactory: @escaping TCPConnectionFactoryType = TCPConnectionFactory
+        port: Int = 8125,
+        connectionTimeout: TimeAmount = TimeAmount.milliseconds(1000),
+        threadGroup: MultiThreadedEventLoopGroup? = nil,
+        maxPushRetries: Int = 5,
+        pushRetryInterval: TimeAmount = TimeAmount.milliseconds(500),
+        connectionFactory: @escaping TCPConnectionFactoryType = TCPConnectionFactory
     ) {
         self.host = host
         self.port = port
@@ -73,7 +73,7 @@ public class TCPStatsDClient: StatsDClientProtocol {
     internal func getConnection() -> EventLoopFuture<Channel> {
         guard let connection = self.connection else {
             logger.debug("Opening connection")
-            self.connection = self.config.connectionFactory(self.config)
+            self.connection = config.connectionFactory(config)
             return self.connection!
         }
 
@@ -83,14 +83,14 @@ public class TCPStatsDClient: StatsDClientProtocol {
 
     /// Push metric
     public func pushMetric(metricLine: String) {
-        self.pushMetric(metricLine: metricLine, retriesLeft: self.config.maxPushRetries)
+        pushMetric(metricLine: metricLine, retriesLeft: config.maxPushRetries)
     }
 
     /// Actual push metrics function with retries counting.
     /// Gets connection and writes metrics in time format to opened socket channel.
     public func pushMetric(metricLine: String, retriesLeft: Int) {
-        // TODO: Send with batches
-        _ = self.getConnection().flatMap { channel in
+        // TODO(Blejwi): Send with batches
+        _ = getConnection().flatMap { channel in
             logger.debug("Sending line: \"\(metricLine)\", retries left: \(retriesLeft)")
             let line = metricLine + "\n"
             var buffer = channel.allocator.buffer(capacity: line.utf8.count)

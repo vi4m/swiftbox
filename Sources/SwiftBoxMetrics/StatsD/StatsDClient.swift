@@ -9,14 +9,14 @@ public protocol StatsDClientProtocol {
 
 extension TimeAmount {
     public func toMicroseconds() -> Double {
-        return Double(self.nanoseconds) / 1000
+        return Double(nanoseconds) / 1000
     }
 
     public func toMilliseconds() -> Double {
-        return self.toMicroseconds() / 1000
+        return toMicroseconds() / 1000
     }
 
     public func toSeconds() -> Double {
-        return self.toMilliseconds() / 1000
+        return toMilliseconds() / 1000
     }
 }

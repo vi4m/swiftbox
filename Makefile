@@ -5,7 +5,7 @@ update:
 	swift package update
 
 xcode:
-	swift package generate-xcodeproj
+	swift package generate-xcodeproj  --enable-code-coverage
 
 debug:
 	swift build -v -c debug
@@ -19,10 +19,11 @@ test:
 docker_test:
 	docker build . -f docker/Dockerfile-dev -t $(DOCKER_TAG)
 	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make test
+	docker run --rm -v `pwd`:$(WORKDIR) $(DOCKER_TAG) make lint
 
 format:
-	swiftformat --disable redundantSelf ./Sources
+	swiftformat ./Sources
 
 lint:
-	swiftformat --lint --verbose --disable redundantSelf ./Sources
+	swiftformat --lint --verbose ./Sources
 

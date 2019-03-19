@@ -2,7 +2,7 @@ import NIO
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
+private var logger = Logging.make(#file)
 
 public typealias UDPConnectionFactoryType = (UDPConnectionConfig) -> EventLoopFuture<Channel>
 
@@ -29,9 +29,9 @@ public struct UDPConnectionConfig {
 
     public init(
             host: String,
-            port: Int = 8125,
-            threadGroup: MultiThreadedEventLoopGroup? = nil,
-            connectionFactory: @escaping UDPConnectionFactoryType = UDPConnectionFactory
+        port: Int = 8125,
+        threadGroup: MultiThreadedEventLoopGroup? = nil,
+        connectionFactory: @escaping UDPConnectionFactoryType = UDPConnectionFactory
     ) {
         self.host = host
         self.port = port
@@ -56,7 +56,7 @@ public class UDPStatsDClient: StatsDClientProtocol {
     internal func getConnection() -> EventLoopFuture<Channel> {
         guard let connection = self.connection else {
             logger.debug("Opening connection")
-            self.connection = self.config.connectionFactory(self.config)
+            self.connection = config.connectionFactory(config)
             return self.connection!
         }
 
@@ -67,8 +67,8 @@ public class UDPStatsDClient: StatsDClientProtocol {
     /// Actual push metrics function with retries counting.
     /// Gets connection and writes metrics in time format to opened socket channel.
     public func pushMetric(metricLine: String) {
-        // TODO: Send with batches
-        _ = self.getConnection().map { channel in
+        // TODO(Blejwi): Send with batches
+        _ = getConnection().map { channel in
             logger.debug("\(channel)")
             logger.debug("Sending line: \"\(metricLine)\"")
 

@@ -1,4 +1,4 @@
-extension Dictionary: KeyPathReferencable {
+extension Dictionary: KeyPathReferenceable {
     public subscript(keyPath keyPath: String) -> Any? {
         get {
             guard let keyPath = Dictionary.keyPathKeys(forKeyPath: keyPath) else { return nil }
@@ -6,19 +6,19 @@ extension Dictionary: KeyPathReferencable {
         }
         set {
             guard let keyPath = Dictionary.keyPathKeys(forKeyPath: keyPath) else { return }
-            self.setValue(newValue, forKeyPath: keyPath)
+            setValue(newValue, forKeyPath: keyPath)
         }
     }
 
-    static private func keyPathKeys(forKeyPath: String) -> [String]? {
-        let keys = forKeyPath.components(separatedBy: ".").reversed().compactMap {$0}
+    private static func keyPathKeys(forKeyPath: String) -> [String]? {
+        let keys = forKeyPath.components(separatedBy: ".").reversed().compactMap { $0 }
         return keys.isEmpty ? nil : keys
     }
 
     public func getValue(forKeyPath keyPath: [String]) -> Any? {
-        let _val: Value? = self[keyPath.last! as! Key]
+        let val: Value? = self[keyPath.last! as! Key]
 
-        guard let unwrapped = self.conditionallyUnwrapDoubleOptional(_val) else {
+        guard let unwrapped = self.conditionallyUnwrapDoubleOptional(val) else {
             return nil
         }
 
@@ -54,7 +54,7 @@ extension Dictionary: KeyPathReferencable {
         let currentValue = self[keyPath.last! as! Key]
 
         if keyPath.count == 1 {
-            let _ = (value as? Value).map { self.updateValue($0, forKey: keyPath.last! as! Key) }
+            _ = (value as? Value).map { self.updateValue($0, forKey: keyPath.last! as! Key) }
         } else if var subDict = currentValue as? [String: Any?] {
             subDict.setValue(value, forKeyPath: Array(keyPath.dropLast()))
             self[keyPath.last! as! Key] = (subDict as! Value)

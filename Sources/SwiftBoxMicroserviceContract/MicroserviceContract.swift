@@ -1,15 +1,14 @@
 import Vapor
 
-
 public struct InfoResponse: Content {
     public var title: String
     public var version: String
     public var domain: String
 
     public init(serviceMetadata: ServiceMetadata) {
-        self.title = serviceMetadata.title
-        self.version = serviceMetadata.version
-        self.domain = serviceMetadata.domain
+        title = serviceMetadata.title
+        version = serviceMetadata.version
+        domain = serviceMetadata.domain
     }
 
     public init(title: String, version: String, domain: String) {
@@ -29,11 +28,11 @@ public final class MicroserviceContractController {
             fatalError("PROJECT_PROPERTIES_PATH env must be set or passed directly!")
         }
 
-        self.metadata = ServiceMetadataBuilder(projectPropertiesPath: path).metadata
+        metadata = ServiceMetadataBuilder(projectPropertiesPath: path).metadata
     }
 
     public init(projectPropertiesContent: Data) {
-        self.metadata = ServiceMetadataBuilder(projectPropertiesContents: projectPropertiesContent).metadata
+        metadata = ServiceMetadataBuilder(projectPropertiesContents: projectPropertiesContent).metadata
     }
 
     private func ping(_: Request) throws -> String {
@@ -41,7 +40,7 @@ public final class MicroserviceContractController {
     }
 
     private func info(_: Request) throws -> InfoResponse {
-        return InfoResponse(serviceMetadata: self.metadata)
+        return InfoResponse(serviceMetadata: metadata)
     }
 
     private func publicEndpoints(_: Request) throws -> String {
@@ -51,13 +50,13 @@ public final class MicroserviceContractController {
 
 extension MicroserviceContractController: RouteCollection {
     public func boot(router: Router) throws {
-        let appId = self.metadata.taskId()
-        let serviceId = self.metadata.serviceId
+        let appId = metadata.taskId()
+        let serviceId = metadata.serviceId
 
-        router.get("/status/ping", use: self.ping)
-        router.get("/status/ping/\(appId)", use: self.ping)
-        router.get("/status/ping/\(serviceId)", use: self.ping)
-        router.get("/status/info", use: self.info)
-        router.get("/status/public-endpoints", use: self.publicEndpoints)
+        router.get("/status/ping", use: ping)
+        router.get("/status/ping/\(appId)", use: ping)
+        router.get("/status/ping/\(serviceId)", use: ping)
+        router.get("/status/info", use: info)
+        router.get("/status/public-endpoints", use: publicEndpoints)
     }
 }

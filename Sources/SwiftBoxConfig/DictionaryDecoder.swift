@@ -3,8 +3,7 @@ import Foundation
 
 import SwiftBoxLogging
 
-fileprivate var logger = Logging.make(#file)
-
+private var logger = Logging.make(#file)
 
 public enum DecoderError: Error {
     case castError(String)
@@ -12,12 +11,11 @@ public enum DecoderError: Error {
     case invalidIndexing(String)
 }
 
-fileprivate func toStringKeyPath(_ codingPath: [CodingKey]) -> String {
+private func toStringKeyPath(_ codingPath: [CodingKey]) -> String {
     return codingPath.map { key in
         return key.intValue != nil ? String(key.intValue!) : key.stringValue
     }.joined(separator: ".")
 }
-
 
 public typealias Storage = [String: Any?]
 public typealias StorageArray = [Any?]
@@ -29,23 +27,24 @@ public struct DictionaryDecoder: Decoder {
     public var userInfo: [CodingUserInfoKey: Any] {
         return [:]
     }
+
     public let storage: Storage
 
-    init(codingPath: [CodingKey], storage _storage: Storage) {
+    init(codingPath: [CodingKey], storage: Storage) {
         self.codingPath = codingPath
-        self.storage = _storage
+        self.storage = storage
     }
 
-    public func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
-        return KeyedDecodingContainer(DictionaryKeyedDecoder<Key>(codingPath: codingPath, storage: self.storage))
+    public func container<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
+        return KeyedDecodingContainer(DictionaryKeyedDecoder<Key>(codingPath: codingPath, storage: storage))
     }
 
     public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-        return DictionaryUnkeyedDecoder(codingPath: codingPath, storage: self.storage)
+        return DictionaryUnkeyedDecoder(codingPath: codingPath, storage: storage)
     }
 
     public func singleValueContainer() throws -> SingleValueDecodingContainer {
-        return DictionarySingleValueDecoder(codingPath: codingPath, storage: self.storage)
+        return DictionarySingleValueDecoder(codingPath: codingPath, storage: storage)
     }
 }
 
@@ -59,7 +58,7 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
     }
 
     public func decodeNil() -> Bool {
-        let keyPath = toStringKeyPath(self.codingPath)
+        let keyPath = toStringKeyPath(codingPath)
         guard let value = self.storage[keyPath: keyPath] else {
             return true
         }
@@ -70,11 +69,11 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
     }
 
     func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-        let keyPath = toStringKeyPath(self.codingPath)
-        let value = self.storage[keyPath: keyPath]
+        let keyPath = toStringKeyPath(codingPath)
+        let value = storage[keyPath: keyPath]
 
         do {
-            return try self.unbox(value: value, to: type)
+            return try unbox(value: value, to: type)
         } catch let error as DecoderError {
             logger.error("Error when decoding \(keyPath): \(error)")
             throw error
@@ -97,7 +96,7 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
         } else if to.self is Float.Type, let value = value as? Float {
             return value as! To
         } else if let value = value as? String {
-            return try self.unbox(value: value, to: to)
+            return try unbox(value: value, to: to)
         } else {
             guard let castValue = value as? To else {
                 throw DecoderError.castError("Cannot cast \(value) to \(to)")
@@ -109,7 +108,7 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
 
     private func unbox<To>(value: String, to: To.Type) throws -> To {
         if to.self is Bool.Type {
-            return try self.unboxBool(value: value) as! To
+            return try unboxBool(value: value) as! To
         } else if to.self is Int.Type {
             return Int(value) as! To
         } else if to.self is Double.Type {
@@ -122,7 +121,6 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
             throw DecoderError.castError("Cannot cast \(value) to \(to)")
         }
         return castValue
-
     }
 
     private func unboxBool(value: String) throws -> Bool {
@@ -135,7 +133,6 @@ private struct DictionarySingleValueDecoder: SingleValueDecodingContainer {
         }
 
         throw DecoderError.castError("Unknown value \(value) for boolean type. Allowed values are: 1, true, 0, false")
-
     }
 }
 
@@ -157,20 +154,21 @@ private struct DictionaryKeyedDecoder<K>: KeyedDecodingContainerProtocol where K
             value = self.storage
         }
 
-        let keys = (value as! Dictionary<String, Any>).keys.map { value in
+        let keys = (value as! [String: Any]).keys.map { value in
+            // swiftformat:disable redundantInit
             return K.init(stringValue: value)
         }.filter {
             $0 != nil
         }
-        self.allKeys = keys as! [K]
+        allKeys = keys as! [K]
     }
 
     func contains(_ key: K) -> Bool {
-        return self.allKeys.contains {$0.stringValue == key.stringValue}
+        return allKeys.contains { $0.stringValue == key.stringValue }
     }
 
     func decodeNil(forKey key: K) throws -> Bool {
-        let keyPath = toStringKeyPath(self.codingPath + [key])
+        let keyPath = toStringKeyPath(codingPath + [key])
 
         guard let value = self.storage[keyPath: keyPath] else {
             return true
@@ -181,25 +179,25 @@ private struct DictionaryKeyedDecoder<K>: KeyedDecodingContainerProtocol where K
         return false
     }
 
-    func decode<T>(_ type: T.Type, forKey key: K) throws -> T where T : Decodable {
-        let decoder = DictionaryDecoder(codingPath: codingPath + [key], storage: self.storage)
+    func decode<T>(_: T.Type, forKey key: K) throws -> T where T: Decodable {
+        let decoder = DictionaryDecoder(codingPath: codingPath + [key], storage: storage)
         return try T(from: decoder)
     }
 
-    func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: K) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-        return KeyedDecodingContainer(DictionaryKeyedDecoder<NestedKey>(codingPath: codingPath + [key], storage: self.storage))
+    func nestedContainer<NestedKey>(keyedBy _: NestedKey.Type, forKey key: K) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+        return KeyedDecodingContainer(DictionaryKeyedDecoder<NestedKey>(codingPath: codingPath + [key], storage: storage))
     }
 
     func nestedUnkeyedContainer(forKey key: K) throws -> UnkeyedDecodingContainer {
-        return DictionaryUnkeyedDecoder(codingPath: codingPath + [key], storage: self.storage)
+        return DictionaryUnkeyedDecoder(codingPath: codingPath + [key], storage: storage)
     }
 
     func superDecoder() throws -> Decoder {
-        return DictionaryDecoder(codingPath: codingPath, storage: self.storage)
+        return DictionaryDecoder(codingPath: codingPath, storage: storage)
     }
 
     func superDecoder(forKey key: K) throws -> Decoder {
-        return DictionaryDecoder(codingPath: codingPath + [key], storage: self.storage)
+        return DictionaryDecoder(codingPath: codingPath + [key], storage: storage)
     }
 }
 
@@ -209,53 +207,54 @@ private struct DictionaryUnkeyedDecoder: UnkeyedDecodingContainer {
     var isAtEnd: Bool {
         return currentIndex >= count!
     }
+
     var currentIndex: Int
     var index: CodingKey {
         return BasicKey(currentIndex)
     }
+
     let storage: Storage
 
     init(codingPath: [CodingKey], storage: Storage) {
         self.codingPath = codingPath
         self.storage = storage
-        self.currentIndex = 0
+        currentIndex = 0
 
         let keyPath = toStringKeyPath(self.codingPath)
         if let value = self.storage[keyPath: keyPath] {
-            self.count = (value as! [Any?]).count
+            count = (value as! [Any?]).count
         } else {
-            self.count = 0
+            count = 0
         }
-
     }
 
     mutating func decodeNil() throws -> Bool {
-        let keyPath = toStringKeyPath(self.codingPath) + ".\(self.currentIndex)"
-        let value = self.storage[keyPath: keyPath]
+        let keyPath = toStringKeyPath(codingPath) + ".\(currentIndex)"
+        let value = storage[keyPath: keyPath]
 
         if value == nil {
-            self.currentIndex += 1
+            currentIndex += 1
             return true
         } else {
             return false
         }
     }
 
-    mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
+    mutating func decode<T>(_: T.Type) throws -> T where T: Decodable {
         defer { currentIndex += 1 }
-        let decoder = DictionaryDecoder(codingPath: codingPath + [index], storage: self.storage)
+        let decoder = DictionaryDecoder(codingPath: codingPath + [index], storage: storage)
         return try T(from: decoder)
     }
 
-    mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-        return KeyedDecodingContainer(DictionaryKeyedDecoder<NestedKey>(codingPath: codingPath + [index], storage: self.storage))
+    mutating func nestedContainer<NestedKey>(keyedBy _: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+        return KeyedDecodingContainer(DictionaryKeyedDecoder<NestedKey>(codingPath: codingPath + [index], storage: storage))
     }
 
     mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
-        return DictionaryUnkeyedDecoder(codingPath: codingPath + [index], storage: self.storage)
+        return DictionaryUnkeyedDecoder(codingPath: codingPath + [index], storage: storage)
     }
 
     mutating func superDecoder() throws -> Decoder {
-        return DictionaryDecoder(codingPath: codingPath + [index], storage: self.storage)
+        return DictionaryDecoder(codingPath: codingPath + [index], storage: storage)
     }
 }

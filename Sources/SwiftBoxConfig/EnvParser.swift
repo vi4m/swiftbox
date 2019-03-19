@@ -24,10 +24,10 @@ class FlatDictConfigParser {
 
     /// Splits key to array of strings using predefined separator
     private func keyToPathArray(_ key: String) -> [String] {
-        return key.split(separator: self.separator).compactMap { $0.lowercased() }
+        return key.split(separator: separator).compactMap { $0.lowercased() }
     }
 
-    /// Joins array of string to KeyPathReferencable format
+    /// Joins array of string to KeyPathReferenceable format
     private func pathArrayToKeyPath(_ pathArray: [String]) -> String {
         return pathArray.joined(separator: ".")
     }
@@ -39,13 +39,13 @@ class FlatDictConfigParser {
 
         for key in sortedKeys {
             let value = data[key]
-            let splittedPath = self.keyToPathArray(key)
+            let splittedPath = keyToPathArray(key)
 
             var path: [String] = []
-            for (i, pathPart) in self.keyToPathArray(key).enumerated() {
+            for (i, pathPart) in keyToPathArray(key).enumerated() {
                 path.append("\(pathPart)")
 
-                let keyPath = self.pathArrayToKeyPath(path)
+                let keyPath = pathArrayToKeyPath(path)
                 let isLastPart = i == splittedPath.count - 1
                 let isCurrentKeyInt: Bool = Int("\(pathPart)") != nil
                 let isNextKeyInt: Bool = isLastPart ? false : Int("\(splittedPath[i + 1])") != nil
@@ -58,10 +58,10 @@ class FlatDictConfigParser {
                         // Means that there is duplicate key in environment
                         throw EnvParseError(message: "Attempt to override existing value: '\(currentValue)' for path: '\(keyPath)', with '\(key)=\(String(describing: value))'. Please check env configuration")
                     } else {
-                        if currentValue as? Storage != nil && !isNextKeyInt {
+                        if currentValue as? Storage != nil, !isNextKeyInt {
                             // Current value is dict and next key is string type
                             continue
-                        } else if currentValue as? StorageArray != nil && isNextKeyInt {
+                        } else if currentValue as? StorageArray != nil, isNextKeyInt {
                             // Current value is array and next key is int type
                             continue
                         } else {
@@ -73,7 +73,7 @@ class FlatDictConfigParser {
                     // If it's last part value should be assigned directly
                     // If not, need to create array or dict wrapper
                     if isCurrentKeyInt {
-                        self.fillMissingArrayIndexes(path: path, pathPart: pathPart, result: &result)
+                        fillMissingArrayIndexes(path: path, pathPart: pathPart, result: &result)
                     }
 
                     if isLastPart {
@@ -99,13 +99,13 @@ class FlatDictConfigParser {
     }
 
     private func fillMissingArrayIndexes(path: [String], pathPart: String, result: inout Storage) {
-        let parentPath = self.pathArrayToKeyPath(Array(path[0..<path.count-1]))
-        var parentValue  = result[keyPath: parentPath] as! [Any?]
+        let parentPath = pathArrayToKeyPath(Array(path[0 ..< path.count - 1]))
+        var parentValue = result[keyPath: parentPath] as! [Any?]
         let currentIntKey = Int("\(pathPart)")!
 
         if parentValue.count <= currentIntKey {
             // Fill missing values with nil
-            for _ in parentValue.count...currentIntKey  {
+            for _ in parentValue.count ... currentIntKey {
                 parentValue.append(nil)
             }
             result[keyPath: parentPath] = parentValue
