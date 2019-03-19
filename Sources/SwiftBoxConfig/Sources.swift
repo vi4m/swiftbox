@@ -49,7 +49,6 @@ public class EnvSource: ConfigSource {
         return try FlatDictConfigParser(data: filteredData, separator: separator).decode()
     }
 
-    // TODO:
     private func filterByPrefix(data: Storage, prefix: String?) -> Storage {
         if let prefix = prefix {
             let _prefix = prefix.lowercased() + String(separator)
