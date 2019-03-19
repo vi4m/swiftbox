@@ -27,7 +27,7 @@ class FlatDictConfigParser {
         return key.split(separator: separator).compactMap { $0.lowercased() }
     }
 
-    /// Joins array of string to KeyPathReferencable format
+    /// Joins array of string to KeyPathReferenceable format
     private func pathArrayToKeyPath(_ pathArray: [String]) -> String {
         return pathArray.joined(separator: ".")
     }

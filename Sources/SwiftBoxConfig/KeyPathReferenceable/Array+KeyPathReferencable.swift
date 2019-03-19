@@ -1,4 +1,4 @@
-extension Array: KeyPathReferencable {
+extension Array: KeyPathReferenceable {
     public subscript(keyPath keyPath: String) -> Any? {
         get {
             guard let keyPath = Array.keyPathKeys(forKeyPath: keyPath)

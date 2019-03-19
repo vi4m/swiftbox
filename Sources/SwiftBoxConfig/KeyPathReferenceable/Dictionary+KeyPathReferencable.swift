@@ -1,4 +1,4 @@
-extension Dictionary: KeyPathReferencable {
+extension Dictionary: KeyPathReferenceable {
     public subscript(keyPath keyPath: String) -> Any? {
         get {
             guard let keyPath = Dictionary.keyPathKeys(forKeyPath: keyPath) else { return nil }
