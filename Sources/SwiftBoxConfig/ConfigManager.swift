@@ -89,7 +89,8 @@ extension ConfigManager {
             }
         }
 
-        let config = try T(from: DictionaryDecoder(codingPath: [], storage: result))
+        // swiftformat:disable redundantInit
+        let config = try T.init(from: DictionaryDecoder(codingPath: [], storage: result))
         try setConfiguration(value: config)
     }
 

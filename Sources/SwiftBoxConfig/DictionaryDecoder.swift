@@ -155,7 +155,8 @@ private struct DictionaryKeyedDecoder<K>: KeyedDecodingContainerProtocol where K
         }
 
         let keys = (value as! [String: Any]).keys.map { value in
-            return K(stringValue: value)
+            // swiftformat:disable redundantInit
+            return K.init(stringValue: value)
         }.filter {
             $0 != nil
         }
