@@ -30,9 +30,9 @@ public struct DictionaryDecoder: Decoder {
 
     public let storage: Storage
 
-    init(codingPath: [CodingKey], storage _storage: Storage) {
+    init(codingPath: [CodingKey], storage: Storage) {
         self.codingPath = codingPath
-        storage = _storage
+        self.storage = storage
     }
 
     public func container<Key>(keyedBy _: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
