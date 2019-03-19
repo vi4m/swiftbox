@@ -5,7 +5,7 @@ update:
 	swift package update
 
 xcode:
-	swift package generate-xcodeproj
+	swift package generate-xcodeproj  --enable-code-coverage
 
 debug:
 	swift build -v -c debug
