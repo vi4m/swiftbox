@@ -8,7 +8,6 @@ let package = Package(
         products: [
             .library(name: "SwiftBoxLogging", type: .static, targets: ["SwiftBoxLogging"]),
             .library(name: "SwiftBoxMetrics", type: .static, targets: ["SwiftBoxMetrics"]),
-            .library(name: "SwiftBoxMicroserviceContract", type: .static, targets: ["SwiftBoxMicroserviceContract"]),
             .library(name: "SwiftBoxConfig", type: .static, targets: ["SwiftBoxConfig"]),
         ],
         dependencies: [
@@ -33,14 +32,6 @@ let package = Package(
             .testTarget(
                     name: "SwiftBoxMetricsTests",
                     dependencies: ["SwiftBoxMetrics", "SwiftTestReporter"]
-            ),
-
-            .target(name: "SwiftBoxMicroserviceContract",
-                    dependencies: ["Vapor"]
-            ),
-            .testTarget(
-                    name: "SwiftBoxMicroserviceContractTests",
-                    dependencies: ["SwiftBoxMicroserviceContract", "SwiftTestReporter"]
             ),
 
             .target(name: "SwiftBoxConfig",

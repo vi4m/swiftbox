@@ -149,7 +149,7 @@ struct Conf: Configuration {
     let nested: NestedConf
     let array: [String?]
     let arraynested: [NestedConf]
-    
+
     struct NestedConf: Configuration {
         let value: String?
     }
@@ -193,7 +193,7 @@ struct Conf: Configuration {
     let nested: NestedConf
     let array: [String?]
     let arraynested: [NestedConf]
-    
+
     struct NestedConf: Configuration {
         let value: String?
     }
@@ -271,7 +271,7 @@ logger.fatal("fatal")
 ```
 
 ### Custom Loggers
-To create custom loggers your class must conform to `Logger` protocol from `Console/Logging` package. 
+To create custom loggers your class must conform to `Logger` protocol from `Console/Logging` package.
 
 ### Vapor
 You can use same logging in Vapor and logging package:
@@ -309,7 +309,7 @@ import SwiftBoxMetrics
 
 #### 2. Bootstrap
 Metrics must be bootstrap with Handler, that conforms to `MetricsHandler` protocol:
-```swift        
+```swift
 Metrics.bootstrap(
     try StatsDMetricsHandler(
         baseMetricPath: AppConfig.global.statsd.basePath!,
@@ -362,42 +362,3 @@ try StatsDMetricsHandler(
 
 #### Custom Handlers
 To create custom handlers, conform to `MetricsHandler` class.
-
-## Microservice contract
-Microservice contract for Vapor application that exposes basic service metadata.
-
-Registered endpoints:
-- `/status/ping`
-- `/status/info`
-- `/status/public-endpoints`
-
-### Usage
-
-#### 1. Import
-```swift
-import SwiftBoxMicroserviceContract
-```
-
-#### 2. Register routes
-```swift
-public func routes(_ router: Router) throws {
-    /// ... your routes ...
-
-    // Microservice contract
-    try router.register(collection: MicroserviceContractController())
-}
-```
-
-#### 3. Config file
-Microservice contract requires JSON configuration file with a following structure:
-```json
-{
-    "boundedContext": "test",
-    "domain": "tech",
-    "title": "test",
-    "version": "1.0",
-    "serviceId": "test.id",
-    "scmRepository": "https://github.com/my/repo"
-}
-```
-Create such file and add it's path to application env variables with `PROJECT_PROPERTIES_PATH` key.

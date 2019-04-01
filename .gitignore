@@ -6,3 +6,4 @@ build
 *.xcodeproj
 Package.resolved
 tests.xml
+.DS_Store

@@ -2,7 +2,6 @@
 
 import SwiftTestReporter
 import XCTest
-@testable import SwiftBoxMicroserviceContractTests
 @testable import SwiftBoxMetricsTests
 @testable import SwiftBoxLoggingTests
 @testable import SwiftBoxConfigTests
@@ -23,10 +22,6 @@ XCTMain([
     testCase(TimeAmountTests.allTests),
     testCase(TCPStatsDClientTests.allTests),
     testCase(UDPStatsDClientTests.allTests),
-
-    // Microservice contract
-    testCase(MicroserviceContractTests.allTests),
-    testCase(MicroserviceContractEndpointTests.allTests),
 
     // Configuration
     testCase(ConfigManagerTests.allTests),
